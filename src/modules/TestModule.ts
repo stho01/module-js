@@ -20,16 +20,15 @@ module ModulesJS.Modules {
         //************************************************************
 
         init(moduleHtml): void {
-            console.log(moduleHtml);
-            alert(moduleHtml);
-        } 
+            console.log("Test module initialized");
+        }
 
-        load(): void {
-            
+        onLoad(): void {
+            console.log("Test module loaded");
         }
 
         dispose(): void {
-            
+            console.log("Test module disposed");
         }
 
         //************************************************************

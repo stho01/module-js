@@ -34,15 +34,18 @@ module ModulesJS.Managers {
         //* Fields
         //************************************************************
         
-        private _instanceMap                : Map<HTMLElement, ModuleDataHolder> = new Map();
-        private _namespaces                 : string[]                           = [];
+        private readonly _instanceMap           : Map<HTMLElement, ModuleDataHolder> = new Map();
+        private readonly _mutationObserver      : MutationObserver;
+        private _namespaces                     : string[]                           = [];
         
         //************************************************************
         //* Ctor
         //************************************************************
 
         // this is a singleton
-        private constructor() { }
+        private constructor() { 
+            this._mutationObserver = new MutationObserver(this._onDomMutatedEventHandler.bind(this));
+        }
         
         //************************************************************
         //* Public member functions
@@ -64,6 +67,11 @@ module ModulesJS.Managers {
         public init(): void {
             this.createAllModules();
             this.loadModules();
+            
+            this._mutationObserver.observe(document.body, { 
+                childList: true, 
+                subtree: true
+            }); 
         }
 
         /**
@@ -72,15 +80,22 @@ module ModulesJS.Managers {
          * @returns {boolean} - true if module was successfully created 
          */
         public createModule(moduleElement: HTMLElement): boolean {
-            if (this.isModule(moduleElement)) {
+            // create module from element if the module is tagged as a module and has not 
+            // yet been created. 
+            if (this.isModule(moduleElement) && !this._instanceMap.has(moduleElement)) {
+                // get the module name and tries to create an instance of the module class. 
                 let moduleName  : string    = moduleElement.getAttribute(Constants.Common.MODULE_JS_ATTRIBUTE_NAME),
                     instance    : IModule   = Utils.Activator.tryCreateInstanceWithinNamespaces<IModule>(moduleName, this._namespaces);
-                
+
+                // if module failed to instantiate we throws an exception. 
                 if (instance == null) {
                     throw new Error(`The module with name [${moduleName}] couldn't be created within these namespaces [${this._namespaces.join(", ")}]`);
                 }
                 
+                // Initialize the module 
                 instance.init(moduleElement);
+                
+                // Cache module and module meta data. 
                 this._instanceMap.set(moduleElement, {
                     element     : moduleElement,
                     module      : instance,
@@ -88,6 +103,8 @@ module ModulesJS.Managers {
                     loaded      : false
                 });
                 
+                // Return true as a sign that the module was 
+                // successfully instantiated and initialized. 
                 return true;
             }
             
@@ -109,11 +126,26 @@ module ModulesJS.Managers {
          */
         public loadModules(): void {
             this._instanceMap.forEach((value: ModuleDataHolder, key: HTMLElement) => {
-                if(value.loaded === false) {
-                    value.module.load();
+                if (value.loaded === false) {
+                    value.module.onLoad();
                     value.loaded = true;
-                } 
+                }
             });
+        }
+
+        /**
+         * Dispose all modules that no longer exist in DOM.
+         */
+        public disposeModulesNotInDOM(): void {
+            let disposedModules: ModuleDataHolder[] = [];
+            this._instanceMap.forEach((value: ModuleDataHolder, key: HTMLElement) => {
+                if (!document.body.contains(value.element)) {
+                    value.module.dispose();
+                    disposedModules.push(value);
+                }
+            });
+            
+            disposedModules.forEach((moduleDH: ModuleDataHolder) => this._instanceMap.delete(moduleDH.element));
         }
         
         /**
@@ -151,6 +183,21 @@ module ModulesJS.Managers {
             }
             
             return (moduleElements || []);
+        }
+        
+        //********************************************************************************
+        //** Event handlers
+        //********************************************************************************
+
+        /**
+         * 
+         * @param mutations
+         * @param mutationObserver
+         * @private
+         */
+        private _onDomMutatedEventHandler(mutations: MutationRecord[], mutationObserver: MutationObserver): void {
+            this.init();
+            this.disposeModulesNotInDOM();
         }
     }
 }

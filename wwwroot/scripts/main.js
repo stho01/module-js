@@ -37,6 +37,7 @@ var ModulesJS;
             function ModuleManager() {
                 this._instanceMap = new Map();
                 this._namespaces = [];
+                this._mutationObserver = new MutationObserver(this._onDomMutatedEventHandler.bind(this));
             }
             ModuleManager.prototype.configure = function(namespaces) {
                 this._namespaces = namespaces;
@@ -45,9 +46,13 @@ var ModulesJS;
             ModuleManager.prototype.init = function() {
                 this.createAllModules();
                 this.loadModules();
+                this._mutationObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
             };
             ModuleManager.prototype.createModule = function(moduleElement) {
-                if (this.isModule(moduleElement)) {
+                if (this.isModule(moduleElement) && !this._instanceMap.has(moduleElement)) {
                     var moduleName = moduleElement.getAttribute(ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME), instance = Utils.Activator.tryCreateInstanceWithinNamespaces(moduleName, this._namespaces);
                     if (instance == null) {
                         throw new Error("The module with name [" + moduleName + "] couldn't be created within these namespaces [" + this._namespaces.join(", ") + "]");
@@ -75,9 +80,22 @@ var ModulesJS;
             ModuleManager.prototype.loadModules = function() {
                 this._instanceMap.forEach(function(value, key) {
                     if (value.loaded === false) {
-                        value.module.load();
+                        value.module.onLoad();
                         value.loaded = true;
                     }
+                });
+            };
+            ModuleManager.prototype.disposeModulesNotInDOM = function() {
+                var _this = this;
+                var disposedModules = [];
+                this._instanceMap.forEach(function(value, key) {
+                    if (!document.body.contains(value.element)) {
+                        value.module.dispose();
+                        disposedModules.push(value);
+                    }
+                });
+                disposedModules.forEach(function(moduleDH) {
+                    return _this._instanceMap.delete(moduleDH.element);
                 });
             };
             ModuleManager.prototype.isModule = function(element) {
@@ -100,6 +118,10 @@ var ModulesJS;
                 }
                 return moduleElements || [];
             };
+            ModuleManager.prototype._onDomMutatedEventHandler = function(mutations, mutationObserver) {
+                this.init();
+                this.disposeModulesNotInDOM();
+            };
             return ModuleManager;
         }();
         ModuleManager.instance = new ModuleManager();
@@ -116,14 +138,90 @@ var ModulesJS;
         var TestModule = function() {
             function TestModule() {}
             TestModule.prototype.init = function(moduleHtml) {
-                console.log(moduleHtml);
-                alert(moduleHtml);
+                console.log("Test module initialized");
             };
-            TestModule.prototype.load = function() {};
-            TestModule.prototype.dispose = function() {};
+            TestModule.prototype.onLoad = function() {
+                console.log("Test module loaded");
+            };
+            TestModule.prototype.dispose = function() {
+                console.log("Test module disposed");
+            };
             return TestModule;
         }();
         Modules.TestModule = TestModule;
+    })(Modules = ModulesJS.Modules || (ModulesJS.Modules = {}));
+})(ModulesJS || (ModulesJS = {}));
+
+var ModulesJS;
+
+(function(ModulesJS) {
+    var Modules;
+    (function(Modules) {
+        "use strict";
+        var TimerModule = function() {
+            function TimerModule() {
+                this._startTime = null;
+                this._startTime = null;
+                this._totalMS = 0;
+                this._kill = false;
+            }
+            TimerModule.prototype.init = function(moduleHtml) {
+                console.log("Timer module initialized");
+                this._minsSpan = moduleHtml.querySelector('[data-js-hook="tc:mins"]');
+                this._secsSpan = moduleHtml.querySelector('[data-js-hook="tc:secs"]');
+                this._hsSpan = moduleHtml.querySelector('[data-js-hook="tc:hs"]');
+            };
+            TimerModule.prototype.onLoad = function() {
+                this._minsSpan.innerText = "00";
+                this._secsSpan.innerText = "00";
+                if (this._hsSpan != null) {
+                    this._hsSpan.innerText = "00";
+                }
+                this._animFrameReqId = requestAnimationFrame(this._tick.bind(this));
+                console.log("Timer module loaded and started");
+            };
+            TimerModule.prototype.dispose = function() {
+                console.log("Timer module disposed");
+                this._kill = true;
+                cancelAnimationFrame(this._animFrameReqId);
+            };
+            TimerModule.prototype._tick = function(ts) {
+                if (this._startTime == null) {
+                    this._startTime = ts;
+                    console.log("StartTime: ", this._startTime);
+                }
+                if (this._kill === false) {
+                    this._animFrameReqId = requestAnimationFrame(this._tick.bind(this));
+                }
+                this._totalMS = ts - this._startTime;
+                var time = this._calculateTime();
+                this._displayTime(time.min, time.sec, time.hs);
+            };
+            TimerModule.prototype._calculateTime = function() {
+                var totalHs = Math.floor(this._totalMS / 10), totalSeconds = Math.floor(this._totalMS / 1e3), hs = totalHs % 100, seconds = totalSeconds % 60, minutes = Math.floor(totalSeconds / 60);
+                return {
+                    sec: seconds,
+                    min: minutes,
+                    hs: hs
+                };
+            };
+            TimerModule.prototype._displayTime = function(minutes, seconds, hs) {
+                if (this._crrntDisplayedMin != minutes) {
+                    this._crrntDisplayedMin = minutes;
+                    this._minsSpan.innerText = minutes < 10 ? "0" + minutes.toString(10) : minutes.toString(10);
+                }
+                if (this._crrntDisplayedSec != seconds) {
+                    this._crrntDisplayedSec = seconds;
+                    this._secsSpan.innerText = seconds < 10 ? "0" + seconds.toString(10) : seconds.toString(10);
+                }
+                if (this._hsSpan != null && this._crrntDisplayedHs != hs) {
+                    this._crrntDisplayedHs = hs;
+                    this._hsSpan.innerText = hs < 10 ? "0" + hs.toString(10) : hs.toString(10);
+                }
+            };
+            return TimerModule;
+        }();
+        Modules.TimerModule = TimerModule;
     })(Modules = ModulesJS.Modules || (ModulesJS.Modules = {}));
 })(ModulesJS || (ModulesJS = {}));
 

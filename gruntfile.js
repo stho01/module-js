@@ -49,14 +49,4 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-sass');
-
-    // Javascript
-    grunt.registerTask('Build Javascript', ['uglify:build']);
-    grunt.registerTask('Minify Javascript', ['uglify:minify_build']);
-    grunt.registerTask('Watch Javascript', ['watch:scripts']);
-
-    // SASS
-    grunt.registerTask('Build SASS', ['sass:dev']);
-    grunt.registerTask('Watch SASS', ['watch:sass']);
-
 };
