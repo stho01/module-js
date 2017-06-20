@@ -44,12 +44,15 @@ var ModulesJS;
                 return this;
             };
             ModuleManager.prototype.init = function() {
-                this.createAllModules();
-                this.loadModules();
+                this.initAndLoadModulesInDOM();
                 this._mutationObserver.observe(document.body, {
                     childList: true,
                     subtree: true
                 });
+            };
+            ModuleManager.prototype.initAndLoadModulesInDOM = function() {
+                this.createAllModules();
+                this.loadModules();
             };
             ModuleManager.prototype.createModule = function(moduleElement) {
                 if (this.isModule(moduleElement) && !this._instanceMap.has(moduleElement)) {
@@ -111,15 +114,14 @@ var ModulesJS;
                 if (includeSelf === void 0) {
                     includeSelf = false;
                 }
-                var moduleNodes = root.querySelectorAll("[" + ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME + "]");
-                var moduleElements = Array.prototype.slice.apply(moduleNodes);
+                var moduleNodes = root.querySelectorAll("[" + ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME + "]"), moduleElements = Array.from(moduleNodes);
                 if (includeSelf === true && this.isModule(root)) {
                     moduleElements.unshift(root);
                 }
                 return moduleElements || [];
             };
             ModuleManager.prototype._onDomMutatedEventHandler = function(mutations, mutationObserver) {
-                this.init();
+                this.initAndLoadModulesInDOM();
                 this.disposeModulesNotInDOM();
             };
             return ModuleManager;

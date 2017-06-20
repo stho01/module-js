@@ -12,7 +12,6 @@ module ModulesJS {
             Managers.ModuleManager.instance
                 .configure(["ModulesJS.Modules"])
                 .init();
-            
         }
     } 
 }

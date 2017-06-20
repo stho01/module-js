@@ -60,18 +60,21 @@ module ModulesJS.Managers {
             this._namespaces = namespaces;
             return this;
         }
+        
+        public init(): void {
+            this.initAndLoadModulesInDOM();
+            this._mutationObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
 
         /**
          * 
          */
-        public init(): void {
+        public initAndLoadModulesInDOM(): void {
             this.createAllModules();
             this.loadModules();
-            
-            this._mutationObserver.observe(document.body, { 
-                childList: true, 
-                subtree: true
-            }); 
         }
 
         /**
@@ -173,10 +176,8 @@ module ModulesJS.Managers {
          * @private
          */
         private _getAllModuleElements(root: HTMLElement = document.body, includeSelf: boolean = false): HTMLElement[] {
-            let moduleNodes: NodeListOf<Element>
-                = root.querySelectorAll(`[${Constants.Common.MODULE_JS_ATTRIBUTE_NAME}]`);
-
-            let moduleElements: HTMLElement[] = Array.prototype.slice.apply(moduleNodes); 
+            let moduleNodes: NodeListOf<HTMLElement> = root.querySelectorAll(`[${Constants.Common.MODULE_JS_ATTRIBUTE_NAME}]`) as NodeListOf<HTMLElement>,
+                moduleElements: HTMLElement[] = Array.from(moduleNodes); 
             
             if (includeSelf === true && this.isModule(root)) {
                 moduleElements.unshift(root);
@@ -196,7 +197,7 @@ module ModulesJS.Managers {
          * @private
          */
         private _onDomMutatedEventHandler(mutations: MutationRecord[], mutationObserver: MutationObserver): void {
-            this.init();
+            this.initAndLoadModulesInDOM();
             this.disposeModulesNotInDOM();
         }
     }
