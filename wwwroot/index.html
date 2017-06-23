@@ -16,6 +16,14 @@
             margin: 1em auto;
             text-align: center;
         }
+        
+        .btn-panel {
+            text-align: center;
+        }
+        
+        .btn-panel button {
+            
+        }
     </style>
 </head>
 <body>
@@ -29,26 +37,23 @@
 </script>
 
 <main>
-    <div data-module="TimerModule">
+    <div data-module="TimerModule" data-options="{rememberTime: true}">
         <div class="timer-clock">
             <span data-js-hook="tc:mins">00</span>:<span data-js-hook="tc:secs">00</span>
         </div>
     </div>
-    
-    <div data-module="TestModule" id="module2">Module #2</div>
-    
-    
-    <button id="btnAddModule">Add module</button>
-    <button id="btnRemoveModule">Remove modules</button>
+    <div class="btn-panel">
+        <button id="btnAddModule">Add module</button>
+        <button id="btnRemoveModule">Remove modules</button>
+    </div>
 </main>
 
     <script src="scripts/main.js"></script>
     <script>
-        ModulesJS.Main.run();
+        Application.Main.run();
         
         var mainElement = document.querySelector("main");
         var domParser = new DOMParser();
-        
         
         document.getElementById("btnRemoveModule").addEventListener("click", function() {
             var createdModules = Array.from(document.querySelectorAll(".created-module"));

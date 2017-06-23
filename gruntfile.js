@@ -19,7 +19,7 @@ module.exports = function (grunt) {
                 options: {},
                 files: [{
                     src: [files],
-                    dest: 'wwwroot/scripts/main.js'
+                    dest: 'wwwroot/scripts/main.min.js'
                 }]
             }
         },

@@ -1,11 +1,20 @@
-module ModulesJS.Managers {
+module ModulesJS.Core.Managers {
     "use strict";
     
     //************************************************************
     //* Type aliases. 
     //************************************************************
     
-    type IModule = ModulesJS.Abstract.IModule;
+    type IModule = ModulesJS.Core.Abstract.IModule;
+    
+    //********************************************************************************
+    //** Manager Options
+    //********************************************************************************
+    
+    export interface ModuleManagerOptions {
+        namespaces      : string[],
+        moduleFactory   : Abstract.IModuleFactory
+    }
     
     //************************************************************
     //* 
@@ -18,10 +27,18 @@ module ModulesJS.Managers {
         loaded      : boolean
     }
     
-    //************************************************************
-    //* 
-    //************************************************************
+    //********************************************************************************
+    //** Defaults
+    //********************************************************************************
     
+    let _defaultOptions: ModuleManagerOptions = {
+        namespaces: [],
+        moduleFactory: new Factories.ModuleFactory()
+    };
+
+    /**
+     * 
+     */
     export class ModuleManager {
 
         //************************************************************
@@ -34,10 +51,10 @@ module ModulesJS.Managers {
         //* Fields
         //************************************************************
         
+        private _options                        : ModuleManagerOptions;
         private readonly _instanceMap           : Map<HTMLElement, ModuleDataHolder> = new Map();
         private readonly _mutationObserver      : MutationObserver;
-        private _namespaces                     : string[]                           = [];
-        
+      
         //************************************************************
         //* Ctor
         //************************************************************
@@ -47,20 +64,38 @@ module ModulesJS.Managers {
             this._mutationObserver = new MutationObserver(this._onDomMutatedEventHandler.bind(this));
         }
         
+        //********************************************************************************
+        //** Accessors
+        //********************************************************************************
+
+        /**
+         * 
+         * @return {Abstract.IModuleFactory<IModule>}
+         */
+        public get moduleFactory(): Abstract.IModuleFactory {
+            return this._options.moduleFactory;
+        }
+        
         //************************************************************
         //* Public member functions
         //************************************************************
 
         /**
+         * Configures the manager by overriding the default options. 
          * 
          * @param namespaces
          * @returns {ModulesJS.Managers.ModuleManager}
          */
-        public configure(namespaces: string[]): ModuleManager {
-            this._namespaces = namespaces;
+        public configure(options: Partial<ModuleManagerOptions>): ModuleManager {
+            this._options = Object.assign({}, _defaultOptions, options);
+            
             return this;
         }
-        
+
+        /**
+         * Finds all modules in DOM and initialize and loads them. 
+         * Initializes the DOM mutation observer. 
+         */
         public init(): void {
             this.initAndLoadModulesInDOM();
             this._mutationObserver.observe(document.body, {
@@ -70,7 +105,7 @@ module ModulesJS.Managers {
         }
 
         /**
-         * 
+         * Initializes all modules before loading them.
          */
         public initAndLoadModulesInDOM(): void {
             this.createAllModules();
@@ -87,13 +122,7 @@ module ModulesJS.Managers {
             // yet been created. 
             if (this.isModule(moduleElement) && !this._instanceMap.has(moduleElement)) {
                 // get the module name and tries to create an instance of the module class. 
-                let moduleName  : string    = moduleElement.getAttribute(Constants.Common.MODULE_JS_ATTRIBUTE_NAME),
-                    instance    : IModule   = Utils.Activator.tryCreateInstanceWithinNamespaces<IModule>(moduleName, this._namespaces);
-
-                // if module failed to instantiate we throws an exception. 
-                if (instance == null) {
-                    throw new Error(`The module with name [${moduleName}] couldn't be created within these namespaces [${this._namespaces.join(", ")}]`);
-                }
+                let instance : IModule = this.moduleFactory.create(moduleElement, this._options.namespaces);
                 
                 // Initialize the module 
                 instance.init(moduleElement);
@@ -115,6 +144,7 @@ module ModulesJS.Managers {
         }
 
         /**
+         * Creates all the modules relative to the root element given. 
          * 
          * @param root
          */
@@ -153,6 +183,7 @@ module ModulesJS.Managers {
         
         /**
          * 
+         * 
          * @param element
          * @returns {boolean}
          */
@@ -169,6 +200,7 @@ module ModulesJS.Managers {
         //************************************************************
 
         /**
+         * Gets all elements that has the data-module attribute. 
          * 
          * @param root
          * @param includeSelf
@@ -191,13 +223,16 @@ module ModulesJS.Managers {
         //********************************************************************************
 
         /**
+         * Handle all DOM Mutation events. 
          * 
          * @param mutations
          * @param mutationObserver
          * @private
          */
         private _onDomMutatedEventHandler(mutations: MutationRecord[], mutationObserver: MutationObserver): void {
+            // find all new modules in DOM and init and load them 
             this.initAndLoadModulesInDOM();
+            // find and dispose all modules that was removed from DOM.
             this.disposeModulesNotInDOM();
         }
     }

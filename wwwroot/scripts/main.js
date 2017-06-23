@@ -1,168 +1,35 @@
-var ModulesJS;
+var Application;
 
-(function(ModulesJS) {
-    var Constants;
-    (function(Constants) {
-        "use strict";
-        var Common = function() {
-            function Common() {}
-            return Common;
-        }();
-        Common.MODULE_JS_ATTRIBUTE_NAME = "data-module";
-        Constants.Common = Common;
-    })(Constants = ModulesJS.Constants || (ModulesJS.Constants = {}));
-})(ModulesJS || (ModulesJS = {}));
-
-var ModulesJS;
-
-(function(ModulesJS) {
+(function(Application) {
     "use strict";
     var Main = function() {
         function Main() {}
         Main.run = function() {
-            ModulesJS.Managers.ModuleManager.instance.configure([ "ModulesJS.Modules" ]).init();
+            ModulesJS.Core.Managers.ModuleManager.instance.configure({
+                namespaces: [ "Application.Modules" ],
+                moduleFactory: new Opt.Factories.ModuleFactory()
+            }).init();
         };
         return Main;
     }();
-    ModulesJS.Main = Main;
-})(ModulesJS || (ModulesJS = {}));
+    Application.Main = Main;
+})(Application || (Application = {}));
 
-var ModulesJS;
+var Application;
 
-(function(ModulesJS) {
-    var Managers;
-    (function(Managers) {
-        "use strict";
-        var ModuleManager = function() {
-            function ModuleManager() {
-                this._instanceMap = new Map();
-                this._namespaces = [];
-                this._mutationObserver = new MutationObserver(this._onDomMutatedEventHandler.bind(this));
-            }
-            ModuleManager.prototype.configure = function(namespaces) {
-                this._namespaces = namespaces;
-                return this;
-            };
-            ModuleManager.prototype.init = function() {
-                this.initAndLoadModulesInDOM();
-                this._mutationObserver.observe(document.body, {
-                    childList: true,
-                    subtree: true
-                });
-            };
-            ModuleManager.prototype.initAndLoadModulesInDOM = function() {
-                this.createAllModules();
-                this.loadModules();
-            };
-            ModuleManager.prototype.createModule = function(moduleElement) {
-                if (this.isModule(moduleElement) && !this._instanceMap.has(moduleElement)) {
-                    var moduleName = moduleElement.getAttribute(ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME), instance = Utils.Activator.tryCreateInstanceWithinNamespaces(moduleName, this._namespaces);
-                    if (instance == null) {
-                        throw new Error("The module with name [" + moduleName + "] couldn't be created within these namespaces [" + this._namespaces.join(", ") + "]");
-                    }
-                    instance.init(moduleElement);
-                    this._instanceMap.set(moduleElement, {
-                        element: moduleElement,
-                        module: instance,
-                        children: this._getAllModuleElements(moduleElement),
-                        loaded: false
-                    });
-                    return true;
-                }
-                return false;
-            };
-            ModuleManager.prototype.createAllModules = function(root) {
-                var _this = this;
-                if (root === void 0) {
-                    root = document.body;
-                }
-                this._getAllModuleElements(root, true).forEach(function(moduleElement) {
-                    return _this.createModule(moduleElement);
-                });
-            };
-            ModuleManager.prototype.loadModules = function() {
-                this._instanceMap.forEach(function(value, key) {
-                    if (value.loaded === false) {
-                        value.module.onLoad();
-                        value.loaded = true;
-                    }
-                });
-            };
-            ModuleManager.prototype.disposeModulesNotInDOM = function() {
-                var _this = this;
-                var disposedModules = [];
-                this._instanceMap.forEach(function(value, key) {
-                    if (!document.body.contains(value.element)) {
-                        value.module.dispose();
-                        disposedModules.push(value);
-                    }
-                });
-                disposedModules.forEach(function(moduleDH) {
-                    return _this._instanceMap.delete(moduleDH.element);
-                });
-            };
-            ModuleManager.prototype.isModule = function(element) {
-                if (element == null) {
-                    return false;
-                }
-                return element.hasAttribute(ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME);
-            };
-            ModuleManager.prototype._getAllModuleElements = function(root, includeSelf) {
-                if (root === void 0) {
-                    root = document.body;
-                }
-                if (includeSelf === void 0) {
-                    includeSelf = false;
-                }
-                var moduleNodes = root.querySelectorAll("[" + ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME + "]"), moduleElements = Array.from(moduleNodes);
-                if (includeSelf === true && this.isModule(root)) {
-                    moduleElements.unshift(root);
-                }
-                return moduleElements || [];
-            };
-            ModuleManager.prototype._onDomMutatedEventHandler = function(mutations, mutationObserver) {
-                this.initAndLoadModulesInDOM();
-                this.disposeModulesNotInDOM();
-            };
-            return ModuleManager;
-        }();
-        ModuleManager.instance = new ModuleManager();
-        Managers.ModuleManager = ModuleManager;
-    })(Managers = ModulesJS.Managers || (ModulesJS.Managers = {}));
-})(ModulesJS || (ModulesJS = {}));
-
-var ModulesJS;
-
-(function(ModulesJS) {
+(function(Application) {
     var Modules;
     (function(Modules) {
         "use strict";
-        var TestModule = function() {
-            function TestModule() {}
-            TestModule.prototype.init = function(moduleHtml) {
-                console.log("Test module initialized");
-            };
-            TestModule.prototype.onLoad = function() {
-                console.log("Test module loaded");
-            };
-            TestModule.prototype.dispose = function() {
-                console.log("Test module disposed");
-            };
-            return TestModule;
-        }();
-        Modules.TestModule = TestModule;
-    })(Modules = ModulesJS.Modules || (ModulesJS.Modules = {}));
-})(ModulesJS || (ModulesJS = {}));
-
-var ModulesJS;
-
-(function(ModulesJS) {
-    var Modules;
-    (function(Modules) {
-        "use strict";
+        var _defaultOptions = {
+            minuteSpanHook: "",
+            secoundHook: "",
+            rememberTime: false
+        };
         var TimerModule = function() {
-            function TimerModule() {
+            function TimerModule(options) {
                 this._startTime = null;
+                this._options = Object.assign({}, _defaultOptions, options);
                 this._startTime = null;
                 this._totalMS = 0;
                 this._kill = false;
@@ -172,6 +39,10 @@ var ModulesJS;
                 this._minsSpan = moduleHtml.querySelector('[data-js-hook="tc:mins"]');
                 this._secsSpan = moduleHtml.querySelector('[data-js-hook="tc:secs"]');
                 this._hsSpan = moduleHtml.querySelector('[data-js-hook="tc:hs"]');
+                if (this._options.rememberTime) {
+                    var storedST = parseFloat(localStorage.getItem(TimerModule._STORED_ST_KEY));
+                    this._startTime = Number.isNaN(storedST) ? null : storedST;
+                }
             };
             TimerModule.prototype.onLoad = function() {
                 this._minsSpan.innerText = "00";
@@ -190,6 +61,9 @@ var ModulesJS;
             TimerModule.prototype._tick = function(ts) {
                 if (this._startTime == null) {
                     this._startTime = ts;
+                    if (this._options.rememberTime) {
+                        localStorage.setItem(TimerModule._STORED_ST_KEY, this._startTime.toString(10));
+                    }
                     console.log("StartTime: ", this._startTime);
                 }
                 if (this._kill === false) {
@@ -223,9 +97,239 @@ var ModulesJS;
             };
             return TimerModule;
         }();
+        TimerModule._STORED_ST_KEY = "timermodule/starttime";
         Modules.TimerModule = TimerModule;
-    })(Modules = ModulesJS.Modules || (ModulesJS.Modules = {}));
+    })(Modules = Application.Modules || (Application.Modules = {}));
+})(Application || (Application = {}));
+
+var ModulesJS;
+
+(function(ModulesJS) {
+    var Core;
+    (function(Core) {
+        var Abstract;
+        (function(Abstract) {
+            "use strict";
+        })(Abstract = Core.Abstract || (Core.Abstract = {}));
+    })(Core = ModulesJS.Core || (ModulesJS.Core = {}));
 })(ModulesJS || (ModulesJS = {}));
+
+var ModulesJS;
+
+(function(ModulesJS) {
+    var Core;
+    (function(Core) {
+        var Constants;
+        (function(Constants) {
+            "use strict";
+            var Common = function() {
+                function Common() {}
+                return Common;
+            }();
+            Common.MODULE_JS_ATTRIBUTE_NAME = "data-module";
+            Constants.Common = Common;
+        })(Constants = Core.Constants || (Core.Constants = {}));
+    })(Core = ModulesJS.Core || (ModulesJS.Core = {}));
+})(ModulesJS || (ModulesJS = {}));
+
+var ModulesJS;
+
+(function(ModulesJS) {
+    var Core;
+    (function(Core) {
+        var Factories;
+        (function(Factories) {
+            "use strict";
+            var ModuleFactory = function() {
+                function ModuleFactory() {}
+                ModuleFactory.prototype.create = function(moduleElement, namespaces) {
+                    var moduleName = moduleElement.getAttribute(Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME), instance = Utils.Activator.tryCreateInstanceWithinNamespaces(moduleName, namespaces);
+                    if (instance == null) {
+                        throw new Error("The module with name [" + moduleName + "] couldn't be created within these namespaces [" + namespaces.join(", ") + "]");
+                    }
+                    return instance;
+                };
+                return ModuleFactory;
+            }();
+            Factories.ModuleFactory = ModuleFactory;
+        })(Factories = Core.Factories || (Core.Factories = {}));
+    })(Core = ModulesJS.Core || (ModulesJS.Core = {}));
+})(ModulesJS || (ModulesJS = {}));
+
+var ModulesJS;
+
+(function(ModulesJS) {
+    var Core;
+    (function(Core) {
+        var Managers;
+        (function(Managers) {
+            "use strict";
+            var _defaultOptions = {
+                namespaces: [],
+                moduleFactory: new Core.Factories.ModuleFactory()
+            };
+            var ModuleManager = function() {
+                function ModuleManager() {
+                    this._instanceMap = new Map();
+                    this._mutationObserver = new MutationObserver(this._onDomMutatedEventHandler.bind(this));
+                }
+                Object.defineProperty(ModuleManager.prototype, "moduleFactory", {
+                    get: function() {
+                        return this._options.moduleFactory;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                ModuleManager.prototype.configure = function(options) {
+                    this._options = Object.assign({}, _defaultOptions, options);
+                    return this;
+                };
+                ModuleManager.prototype.init = function() {
+                    this.initAndLoadModulesInDOM();
+                    this._mutationObserver.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                };
+                ModuleManager.prototype.initAndLoadModulesInDOM = function() {
+                    this.createAllModules();
+                    this.loadModules();
+                };
+                ModuleManager.prototype.createModule = function(moduleElement) {
+                    if (this.isModule(moduleElement) && !this._instanceMap.has(moduleElement)) {
+                        var instance = this.moduleFactory.create(moduleElement, this._options.namespaces);
+                        instance.init(moduleElement);
+                        this._instanceMap.set(moduleElement, {
+                            element: moduleElement,
+                            module: instance,
+                            children: this._getAllModuleElements(moduleElement),
+                            loaded: false
+                        });
+                        return true;
+                    }
+                    return false;
+                };
+                ModuleManager.prototype.createAllModules = function(root) {
+                    var _this = this;
+                    if (root === void 0) {
+                        root = document.body;
+                    }
+                    this._getAllModuleElements(root, true).forEach(function(moduleElement) {
+                        return _this.createModule(moduleElement);
+                    });
+                };
+                ModuleManager.prototype.loadModules = function() {
+                    this._instanceMap.forEach(function(value, key) {
+                        if (value.loaded === false) {
+                            value.module.onLoad();
+                            value.loaded = true;
+                        }
+                    });
+                };
+                ModuleManager.prototype.disposeModulesNotInDOM = function() {
+                    var _this = this;
+                    var disposedModules = [];
+                    this._instanceMap.forEach(function(value, key) {
+                        if (!document.body.contains(value.element)) {
+                            value.module.dispose();
+                            disposedModules.push(value);
+                        }
+                    });
+                    disposedModules.forEach(function(moduleDH) {
+                        return _this._instanceMap.delete(moduleDH.element);
+                    });
+                };
+                ModuleManager.prototype.isModule = function(element) {
+                    if (element == null) {
+                        return false;
+                    }
+                    return element.hasAttribute(Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME);
+                };
+                ModuleManager.prototype._getAllModuleElements = function(root, includeSelf) {
+                    if (root === void 0) {
+                        root = document.body;
+                    }
+                    if (includeSelf === void 0) {
+                        includeSelf = false;
+                    }
+                    var moduleNodes = root.querySelectorAll("[" + Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME + "]"), moduleElements = Array.from(moduleNodes);
+                    if (includeSelf === true && this.isModule(root)) {
+                        moduleElements.unshift(root);
+                    }
+                    return moduleElements || [];
+                };
+                ModuleManager.prototype._onDomMutatedEventHandler = function(mutations, mutationObserver) {
+                    this.initAndLoadModulesInDOM();
+                    this.disposeModulesNotInDOM();
+                };
+                return ModuleManager;
+            }();
+            ModuleManager.instance = new ModuleManager();
+            Managers.ModuleManager = ModuleManager;
+        })(Managers = Core.Managers || (Core.Managers = {}));
+    })(Core = ModulesJS.Core || (ModulesJS.Core = {}));
+})(ModulesJS || (ModulesJS = {}));
+
+var Opt;
+
+(function(Opt) {
+    var Constants;
+    (function(Constants) {
+        "use strict";
+        var Common = function() {
+            function Common() {}
+            return Common;
+        }();
+        Common.OPTIONS_ATTRIBUTE_NAME = "data-options";
+        Constants.Common = Common;
+    })(Constants = Opt.Constants || (Opt.Constants = {}));
+})(Opt || (Opt = {}));
+
+var Opt;
+
+(function(Opt) {
+    var Factories;
+    (function(Factories) {
+        "use strict";
+        var ModuleFactory = function() {
+            function ModuleFactory() {}
+            ModuleFactory.prototype.create = function(moduleElement, namespaces) {
+                var moduleName = moduleElement.getAttribute(ModulesJS.Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME), options = Opt.Nator.instance.getOptions(moduleElement), instance;
+                instance = Utils.Activator.tryCreateInstanceWithinNamespaces(moduleName, namespaces, [ options ]);
+                if (instance == null) {
+                    throw new Error("The module with name [" + moduleName + "] couldn't be created within these namespaces [" + namespaces.join(", ") + "]");
+                }
+                return instance;
+            };
+            return ModuleFactory;
+        }();
+        Factories.ModuleFactory = ModuleFactory;
+    })(Factories = Opt.Factories || (Opt.Factories = {}));
+})(Opt || (Opt = {}));
+
+var Opt;
+
+(function(Opt) {
+    var Nator = function() {
+        function Nator() {}
+        Nator.prototype.getOptions = function(elem) {
+            var fn = new Function("return " + this.getOptionsAsStringValue(elem) + ";");
+            return fn();
+        };
+        Nator.prototype.hasOptions = function(elem) {
+            return elem.hasAttribute(Opt.Constants.Common.OPTIONS_ATTRIBUTE_NAME);
+        };
+        Nator.prototype.getOptionsAsStringValue = function(elem) {
+            if (this.hasOptions(elem)) {
+                return elem.getAttribute(Opt.Constants.Common.OPTIONS_ATTRIBUTE_NAME);
+            }
+            return null;
+        };
+        return Nator;
+    }();
+    Nator.instance = new Nator();
+    Opt.Nator = Nator;
+})(Opt || (Opt = {}));
 
 var Utils;
 

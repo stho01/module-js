@@ -1,17 +1,29 @@
-module ModulesJS.Modules {
+module Application.Modules {
     "use strict";
     
     export interface TimerModuleOptions {
         minuteSpanHook: string;
         secoundHook: string;
+        rememberTime: boolean;
     }
     
-    export class TimerModule implements ModulesJS.Abstract.IModule {
-
+    let _defaultOptions : TimerModuleOptions = {
+      minuteSpanHook        : "",
+      secoundHook           : "",
+      rememberTime          : false  
+    };
+    
+    export class TimerModule implements ModulesJS.Core.Abstract.IModule {
+        //********************************************************************************
+        //** STATIC FIELDS
+        //********************************************************************************
+        private static readonly _STORED_ST_KEY: string = "timermodule/starttime";
+        
         //************************************************************
         //* Fields
         //************************************************************
         
+        private readonly _options   : TimerModuleOptions;
         private _minsSpan           : HTMLSpanElement;
         private _secsSpan           : HTMLSpanElement;
         private _hsSpan             : HTMLSpanElement;
@@ -21,13 +33,14 @@ module ModulesJS.Modules {
         private _crrntDisplayedMin  : number;
         private _kill               : boolean;
         private _startTime          : number|null = null;
-        private _animFrameReqId     : number|null;
+        private _animFrameReqId     : number|null;   
 
         //************************************************************
         //* Ctor
         //************************************************************
 
-        public constructor() {
+        public constructor(options?: Partial<TimerModuleOptions>) {
+            this._options = Object.assign({}, _defaultOptions, options);
             this._startTime = null;
             this._totalMS   = 0;
             this._kill      = false;
@@ -42,6 +55,11 @@ module ModulesJS.Modules {
             this._minsSpan = moduleHtml.querySelector(`[data-js-hook="tc:mins"]`) as HTMLSpanElement;
             this._secsSpan = moduleHtml.querySelector(`[data-js-hook="tc:secs"]`) as HTMLSpanElement;
             this._hsSpan   = moduleHtml.querySelector(`[data-js-hook="tc:hs"]`) as HTMLSpanElement;
+            
+            if(this._options.rememberTime) {
+                let storedST = parseFloat(localStorage.getItem(TimerModule._STORED_ST_KEY));
+                this._startTime =  Number.isNaN(storedST) ? null : storedST;
+            }
         }
 
         onLoad(): void {
@@ -75,6 +93,9 @@ module ModulesJS.Modules {
         private _tick(ts: number): void {
             if(this._startTime == null) {
                 this._startTime = ts;
+                if(this._options.rememberTime) {
+                    localStorage.setItem(TimerModule._STORED_ST_KEY, this._startTime.toString(10));
+                }
                 console.log("StartTime: ", this._startTime);
             }
             
@@ -93,7 +114,6 @@ module ModulesJS.Modules {
          * @private
          */
         private _calculateTime(): { min: number, sec: number, hs: number } {
-            
             let totalHs       : number = Math.floor(this._totalMS / 10),
                 totalSeconds  : number = Math.floor(this._totalMS / 1000),
                 hs            : number = totalHs % 100,
