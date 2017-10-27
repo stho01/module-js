@@ -95,9 +95,9 @@ var Application;
                     this._hsSpan.innerText = hs < 10 ? "0" + hs.toString(10) : hs.toString(10);
                 }
             };
+            TimerModule._STORED_ST_KEY = "timermodule/starttime";
             return TimerModule;
         }();
-        TimerModule._STORED_ST_KEY = "timermodule/starttime";
         Modules.TimerModule = TimerModule;
     })(Modules = Application.Modules || (Application.Modules = {}));
 })(Application || (Application = {}));
@@ -124,9 +124,9 @@ var ModulesJS;
             "use strict";
             var Common = function() {
                 function Common() {}
+                Common.MODULE_JS_ATTRIBUTE_NAME = "data-module";
                 return Common;
             }();
-            Common.MODULE_JS_ATTRIBUTE_NAME = "data-module";
             Constants.Common = Common;
         })(Constants = Core.Constants || (Core.Constants = {}));
     })(Core = ModulesJS.Core || (ModulesJS.Core = {}));
@@ -262,9 +262,9 @@ var ModulesJS;
                     this.initAndLoadModulesInDOM();
                     this.disposeModulesNotInDOM();
                 };
+                ModuleManager.instance = new ModuleManager();
                 return ModuleManager;
             }();
-            ModuleManager.instance = new ModuleManager();
             Managers.ModuleManager = ModuleManager;
         })(Managers = Core.Managers || (Core.Managers = {}));
     })(Core = ModulesJS.Core || (ModulesJS.Core = {}));
@@ -278,9 +278,9 @@ var Opt;
         "use strict";
         var Common = function() {
             function Common() {}
+            Common.OPTIONS_ATTRIBUTE_NAME = "data-options";
             return Common;
         }();
-        Common.OPTIONS_ATTRIBUTE_NAME = "data-options";
         Constants.Common = Common;
     })(Constants = Opt.Constants || (Opt.Constants = {}));
 })(Opt || (Opt = {}));
@@ -325,9 +325,9 @@ var Opt;
             }
             return null;
         };
+        Nator.instance = new Nator();
         return Nator;
     }();
-    Nator.instance = new Nator();
     Opt.Nator = Nator;
 })(Opt || (Opt = {}));
 
@@ -395,4 +395,4 @@ var Utils;
     }();
     Utils.Activator = Activator;
 })(Utils || (Utils = {}));
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=devlopment.js.map

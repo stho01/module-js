@@ -48,27 +48,30 @@
     </div>
 </main>
 
-    <script src="scripts/main.js"></script>
-    <script>
-        Application.Main.run();
-        
-        var mainElement = document.querySelector("main");
-        var domParser = new DOMParser();
-        
-        document.getElementById("btnRemoveModule").addEventListener("click", function() {
-            var createdModules = Array.from(document.querySelectorAll(".created-module"));
-            createdModules.forEach(function (t) { t.parentNode.removeChild(t); }); 
-        });
+<script src="../build/utils.js"></script>
+<script src="../build/optionator.js"></script>
+<script src="../build/modulizer.js"></script>
+<script src="../build/test-app.js"></script>
+<script>
+    Application.Main.run();
+    
+    var mainElement = document.querySelector("main");
+    var domParser = new DOMParser();
+    
+    document.getElementById("btnRemoveModule").addEventListener("click", function() {
+        var createdModules = Array.from(document.querySelectorAll(".created-module"));
+        createdModules.forEach(function (t) { t.parentNode.removeChild(t); }); 
+    });
 
-        document.getElementById("btnAddModule").addEventListener("click", function() {
-            var template        = document.getElementById("TimerClockTemplate").innerText,
-                templateDoc     = domParser.parseFromString(template, "text/html"),
-                moduleElement   = templateDoc.body.firstChild;
-            
-            moduleElement.classList.add("created-module");
-            mainElement.appendChild(moduleElement);
-        });
+    document.getElementById("btnAddModule").addEventListener("click", function() {
+        var template        = document.getElementById("TimerClockTemplate").innerText,
+            templateDoc     = domParser.parseFromString(template, "text/html"),
+            moduleElement   = templateDoc.body.firstChild;
+        
+        moduleElement.classList.add("created-module");
+        mainElement.appendChild(moduleElement);
+    });
 
-    </script>
+</script>
 </body> 
 </html>

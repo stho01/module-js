@@ -10,7 +10,8 @@
     "grunt-contrib-sass": "^1.0.0"
   },
   "devDependencies": {
-    "grunt-contrib-sass": "^1.0.0"
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-shell": "^2.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

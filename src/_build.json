@@ -1,0 +1,23 @@
+[
+    {
+        "name": "devlopment",
+        "files": ["src/**/*"],
+        "dest": "wwwroot/scripts/scripts/"
+    }, 
+    {
+        "name": "modulizer",
+        "files": ["src/modulejs.core/**/*"]
+    },
+    {
+        "name": "optionator",
+        "files": ["src/optionator/**/*"]
+    },
+    {
+        "name": "utils",
+        "files": ["src/utils/**/*"]
+    },
+    {
+        "name": "test-app",
+        "files": ["src/application/**/*"]
+    }
+]
