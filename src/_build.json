@@ -5,8 +5,12 @@
         "dest": "wwwroot/scripts/scripts/"
     }, 
     {
-        "name": "modulizer",
-        "files": ["src/modulejs.core/**/*"]
+        "name": "modulejs",
+        "files": [
+            "src/utils/**/*",
+            "src/optionator/**/*",
+            "src/modulejs.core/**/*"
+        ]
     },
     {
         "name": "optionator",
