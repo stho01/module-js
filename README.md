@@ -31,7 +31,7 @@ A lightweight javascript library that provides an easy and effortless instantiat
                     console.log(moduleHtml);
                 }
             }
-        })(window.Modules || (window.Modules = {})
+        })(window.Modules || (window.Modules = {});
     </script>
 </body>
 </html>
