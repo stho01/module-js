@@ -25,7 +25,7 @@ A lightweight javascript library that provides an easy and effortless instantiat
             Modules.MyModule = function() {
                 //...
             };
-            Modules.prototype = {
+            Modules.MyModule.prototype = {
                 constructor: Modules.MyModule,
                 init: function(moduleHtml) {
                     console.log(moduleHtml);
