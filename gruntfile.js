@@ -1,16 +1,18 @@
 module.exports = function (grunt) {
-    // var files = [ "./src/**/*.js" ];
-    var files = [
+    var testAppFiles = [
+        "src/**/*.js"
+    ];
+    
+    var distFiles = [
         "src/utils/**/*.js",
         "src/optionator/**/*.js",
         "src/modulejs.core/**/*.js"
     ];
     
-    var tsFiles = [];
 
     grunt.initConfig({
         uglify: {
-            build: {
+            build_dist: {
                 options: {
                     mangle: false,
                     compress: false,
@@ -18,21 +20,33 @@ module.exports = function (grunt) {
                     sourceMap: true
                 },
                 files: [{
-                    src: files,
-                    dest: 'wwwroot/scripts/main.js'
+                    src: distFiles,
+                    dest: 'dist/main.js'
                 }]
             },
-            minify_build: {
+            minify_dist_build: {
                 options: {},
                 files: [{
-                    src: [files],
+                    src: distFiles,
+                    dest: 'dist/main.min.js'
+                }]
+            },
+            build_test_app: {
+                options: {
+                    mangle: false,
+                    compress: false,
+                    beautify: true,
+                    sourceMap: true
+                },
+                files: [{
+                    src: testAppFiles,
                     dest: 'wwwroot/scripts/main.min.js'
                 }]
             }
         },
         watch: {
             scripts: {
-                files: files,
+                files: distFiles,
                 tasks: ["uglify:build"]
             },
             sass: {
@@ -61,7 +75,7 @@ module.exports = function (grunt) {
                     "src/optionator/**/*.ts",
                     "src/modulejs.core/**/*.ts"
                 ],
-                out: "dev/d.ts/modularization.js"
+                out: "dist/modularization.js"
             }
         }
     });

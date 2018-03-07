@@ -121,3 +121,4 @@ typings/
 .sass-cache/
 .idea/
 /dev/
+/dist/
