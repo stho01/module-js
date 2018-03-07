@@ -4,6 +4,10 @@
 
 namespace Opt {
 
+    export interface NatorOptions {
+        removeAttributeWhenAcquired?: boolean;
+    }
+    
     export class Nator {
         "use strict";
 
@@ -29,8 +33,13 @@ namespace Opt {
          * 
          * @param elem
          */
-        public getOptions<T>(elem: HTMLElement): T {
-            let fn: Function = new Function(`return ${this.getOptionsAsStringValue(elem)};`)
+        public getOptions<T>(elem: HTMLElement, options?: NatorOptions): T {
+            let fn: Function = new Function(`return ${this.getOptionsAsStringValue(elem)};`);
+            
+            if (options.removeAttributeWhenAcquired === true) {
+               elem.removeAttribute(Constants.Common.OPTIONS_ATTRIBUTE_NAME); 
+            }
+            
             return fn() as T;
         }
 

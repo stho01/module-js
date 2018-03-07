@@ -4,6 +4,8 @@
     "target": "es5",
     "sourceMap": true,
     "experimentalDecorators": true,
+    "declaration": true,
+    "declarationDir": "dev/d.ts/",
     "lib": [
       "dom",
       "es5",
@@ -17,6 +19,7 @@
     ]
   },
   "exclude": [
-    "./node_modules"
+    "./node_modules",
+    "./dev/d.ts/"
   ]
 }

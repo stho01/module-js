@@ -183,7 +183,6 @@ module ModulesJS.Core.Managers {
         
         /**
          * 
-         * 
          * @param element
          * @returns {boolean}
          */
@@ -194,7 +193,7 @@ module ModulesJS.Core.Managers {
             
             return element.hasAttribute(Constants.Common.MODULE_JS_ATTRIBUTE_NAME);
         }
-        
+
         //************************************************************
         //* Private member functions
         //************************************************************
@@ -217,7 +216,7 @@ module ModulesJS.Core.Managers {
             
             return (moduleElements || []);
         }
-        
+
         //********************************************************************************
         //** Event handlers
         //********************************************************************************
