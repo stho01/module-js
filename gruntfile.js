@@ -1,9 +1,9 @@
 module.exports = function (grunt) {
-    var testAppFiles = [
+    let testAppFiles = [
         "src/**/*.js"
     ];
     
-    var distFiles = [
+    let distFiles = [
         "src/utils/**/*.js",
         "src/optionator/**/*.js",
         "src/modulejs.core/**/*.js"
@@ -21,14 +21,14 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     src: distFiles,
-                    dest: 'dist/main.js'
+                    dest: 'dist/modulejs.js'
                 }]
             },
             minify_dist_build: {
                 options: {},
                 files: [{
                     src: distFiles,
-                    dest: 'dist/main.min.js'
+                    dest: 'dist/modulejs.min.js'
                 }]
             },
             build_test_app: {
@@ -46,8 +46,8 @@ module.exports = function (grunt) {
         },
         watch: {
             scripts: {
-                files: distFiles,
-                tasks: ["uglify:build"]
+                files: testAppFiles,
+                tasks: ["uglify:build_test_app"]
             },
             sass: {
                 files: ["content/css/**/*.scss"],
@@ -67,7 +67,18 @@ module.exports = function (grunt) {
         ts: {
             options: {
                 declaration: true,
-                sourceMap: false
+                sourceMap: false,
+                lib: [
+                    "dom",
+                    "es5",
+                    "es2015.core",
+                    "es2015.collection",
+                    "es2015.promise",
+                    "es2015.iterable",
+                    "es2015.symbol",
+                    "es2015.symbol.wellknown",
+                    "es2015.generator"
+                ]
             },
             default : {
                 src: [
@@ -75,7 +86,7 @@ module.exports = function (grunt) {
                     "src/optionator/**/*.ts",
                     "src/modulejs.core/**/*.ts"
                 ],
-                out: "dist/modularization.js"
+                out: "dist/modulejs.js"
             }
         }
     });
@@ -87,5 +98,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-ts');
 
-    grunt.registerTask("default ts", ["ts"]);
+    //grunt.registerTask("default ts", ["ts"]);
+    grunt.registerTask("Build Distribution", ["ts", "uglify:build_dist", "uglify:build_test_app"]);
+    grunt.registerTask("Build Test Application", ["uglify:build_test_app"]);
 };
