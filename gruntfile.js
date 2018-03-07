@@ -40,7 +40,7 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     src: testAppFiles,
-                    dest: 'wwwroot/scripts/main.min.js'
+                    dest: 'wwwroot/scripts/main.js'
                 }]
             }
         },
