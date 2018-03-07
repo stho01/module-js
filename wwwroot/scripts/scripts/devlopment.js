@@ -405,4 +405,4 @@ var Utils;
     }();
     Utils.Activator = Activator;
 })(Utils || (Utils = {}));
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=devlopment.js.map

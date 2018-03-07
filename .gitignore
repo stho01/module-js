@@ -120,6 +120,8 @@ typings/
 
 .sass-cache/
 .idea/
+*.nuspec
+package-lock.json
 /dev/
 /dist/
 /.tscache/
