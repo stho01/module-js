@@ -122,3 +122,4 @@ typings/
 .idea/
 /dev/
 /dist/
+/.tscache/
