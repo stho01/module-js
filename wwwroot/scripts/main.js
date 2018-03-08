@@ -1,19 +1,9 @@
-var Application;
-
-(function(Application) {
-    "use strict";
-    var Main = function() {
-        function Main() {}
-        Main.run = function() {
-            ModulesJS.Core.Managers.ModuleManager.instance.configure({
-                namespaces: [ "Application.Modules" ],
-                moduleFactory: new Opt.Factories.ModuleFactory()
-            }).init();
-        };
-        return Main;
-    }();
-    Application.Main = Main;
-})(Application || (Application = {}));
+window.addEventListener("load", function() {
+    ModulesJS.Core.Managers.ModuleManager.instance.configure({
+        namespaces: [ "Application.Modules" ],
+        moduleFactory: new Opt.Factories.ModuleFactory()
+    }).init();
+});
 
 var Application;
 

@@ -1,6 +1,7 @@
 module.exports = function (grunt) {
     let testAppFiles = [
-        "src/**/*.js"
+        "src/**/*.js",
+        "src/application/Main.js"
     ];
     
     let distFiles = [
