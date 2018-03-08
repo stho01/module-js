@@ -22,6 +22,62 @@ var Application;
     (function(Modules) {
         "use strict";
         var _defaultOptions = {
+            appendToElementSelector: "main",
+            templateSelector: "#TimerClockTemplate",
+            btnRemoveId: "btnRemoveModule",
+            btnAddId: "btnAddModule"
+        };
+        var TimerControlsModule = function() {
+            function TimerControlsModule(options) {
+                this._options = Object.assign({}, _defaultOptions, options);
+                this._domParser = new DOMParser();
+            }
+            TimerControlsModule.prototype.init = function(moduleHtml) {
+                this._moduleHtml = moduleHtml;
+            };
+            TimerControlsModule.prototype.onLoad = function() {
+                this._moduleHtml.addEventListener("click", this._onModuleClickEventHandler.bind(this));
+            };
+            TimerControlsModule.prototype.dispose = function() {
+                this._moduleHtml.removeEventListener("click", this._onModuleClickEventHandler.bind(this));
+            };
+            TimerControlsModule.prototype.removeAll = function() {
+                var createdModules = Array.from(document.querySelectorAll(".created-module"));
+                createdModules.forEach(function(module) {
+                    return module.parentNode.removeChild(module);
+                });
+            };
+            TimerControlsModule.prototype.addModule = function() {
+                var container = document.querySelector(this._options.appendToElementSelector), template = document.querySelector(this._options.templateSelector).innerText, templateDoc = this._domParser.parseFromString(template, "text/html"), moduleElement = templateDoc.body.firstElementChild;
+                moduleElement.classList.add("created-module");
+                container.appendChild(moduleElement);
+            };
+            TimerControlsModule.prototype._onModuleClickEventHandler = function(event) {
+                if (event.target instanceof Element) {
+                    switch (event.target.id) {
+                      case this._options.btnAddId:
+                        this.addModule();
+                        break;
+
+                      case this._options.btnRemoveId:
+                        this.removeAll();
+                        break;
+                    }
+                }
+            };
+            return TimerControlsModule;
+        }();
+        Modules.TimerControlsModule = TimerControlsModule;
+    })(Modules = Application.Modules || (Application.Modules = {}));
+})(Application || (Application = {}));
+
+var Application;
+
+(function(Application) {
+    var Modules;
+    (function(Modules) {
+        "use strict";
+        var _defaultOptions = {
             minuteSpanHook: "",
             secoundHook: "",
             rememberTime: false
