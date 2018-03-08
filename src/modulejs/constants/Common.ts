@@ -1,4 +1,4 @@
-module ModulesJS.Core.Constants {
+module ModulesJS.Constants {
     "use strict";
     export class Common {
 

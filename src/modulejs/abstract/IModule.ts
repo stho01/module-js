@@ -1,4 +1,4 @@
-module ModulesJS.Core.Abstract {
+module ModulesJS.Abstract {
     
     export interface IModule extends IDisposable {
         init(moduleHtml): void;

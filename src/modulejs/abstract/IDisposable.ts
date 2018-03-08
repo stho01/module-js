@@ -1,4 +1,4 @@
-module ModulesJS.Core.Abstract {
+module ModulesJS.Abstract {
     export interface IDisposable {
         dispose(): void;
     }

@@ -2,7 +2,7 @@
  * Created by Sten Marius on 23.06.2017.
  */
 
-namespace ModulesJS.Core.Factories {
+namespace ModulesJS.Factories {
     "use strict";
 
     /**
