@@ -7,7 +7,7 @@ module Application.Modules {
         rememberTime: boolean;
     }
     
-    let _defaultOptions : TimerModuleOptions = {
+    let _defaultOptions : TimerModuleOptions = { 
       minuteSpanHook        : "",
       secoundHook           : "",
       rememberTime          : false  

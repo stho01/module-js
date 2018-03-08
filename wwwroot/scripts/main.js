@@ -1,18 +1,64 @@
+window.addEventListener("load", function() {
+    ModulesJS.Core.Managers.ModuleManager.instance.configure({
+        namespaces: [ "Application.Modules" ],
+        moduleFactory: new Opt.Factories.ModuleFactory()
+    }).init();
+});
+
 var Application;
 
 (function(Application) {
-    "use strict";
-    var Main = function() {
-        function Main() {}
-        Main.run = function() {
-            ModulesJS.Core.Managers.ModuleManager.instance.configure({
-                namespaces: [ "Application.Modules" ],
-                moduleFactory: new Opt.Factories.ModuleFactory()
-            }).init();
+    var Modules;
+    (function(Modules) {
+        "use strict";
+        var _defaultOptions = {
+            appendToElementSelector: "main",
+            templateSelector: "#TimerClockTemplate",
+            btnRemoveId: "btnRemoveModule",
+            btnAddId: "btnAddModule"
         };
-        return Main;
-    }();
-    Application.Main = Main;
+        var TimerControlsModule = function() {
+            function TimerControlsModule(options) {
+                this._options = Object.assign({}, _defaultOptions, options);
+                this._domParser = new DOMParser();
+            }
+            TimerControlsModule.prototype.init = function(moduleHtml) {
+                this._moduleHtml = moduleHtml;
+            };
+            TimerControlsModule.prototype.onLoad = function() {
+                this._moduleHtml.addEventListener("click", this._onModuleClickEventHandler.bind(this));
+            };
+            TimerControlsModule.prototype.dispose = function() {
+                this._moduleHtml.removeEventListener("click", this._onModuleClickEventHandler.bind(this));
+            };
+            TimerControlsModule.prototype.removeAll = function() {
+                var createdModules = Array.from(document.querySelectorAll(".created-module"));
+                createdModules.forEach(function(module) {
+                    return module.parentNode.removeChild(module);
+                });
+            };
+            TimerControlsModule.prototype.addModule = function() {
+                var container = document.querySelector(this._options.appendToElementSelector), template = document.querySelector(this._options.templateSelector).innerText, templateDoc = this._domParser.parseFromString(template, "text/html"), moduleElement = templateDoc.body.firstElementChild;
+                moduleElement.classList.add("created-module");
+                container.appendChild(moduleElement);
+            };
+            TimerControlsModule.prototype._onModuleClickEventHandler = function(event) {
+                if (event.target instanceof Element) {
+                    switch (event.target.id) {
+                      case this._options.btnAddId:
+                        this.addModule();
+                        break;
+
+                      case this._options.btnRemoveId:
+                        this.removeAll();
+                        break;
+                    }
+                }
+            };
+            return TimerControlsModule;
+        }();
+        Modules.TimerControlsModule = TimerControlsModule;
+    })(Modules = Application.Modules || (Application.Modules = {}));
 })(Application || (Application = {}));
 
 var Application;
@@ -291,10 +337,17 @@ var Opt;
     var Factories;
     (function(Factories) {
         "use strict";
+        var _defaultOptions = {
+            removeOptionsAttributeWhenAcquired: false
+        };
         var ModuleFactory = function() {
-            function ModuleFactory() {}
+            function ModuleFactory(options) {
+                this._options = Object.assign({}, _defaultOptions, options);
+            }
             ModuleFactory.prototype.create = function(moduleElement, namespaces) {
-                var moduleName = moduleElement.getAttribute(ModulesJS.Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME), options = Opt.Nator.instance.getOptions(moduleElement), instance;
+                var moduleName = moduleElement.getAttribute(ModulesJS.Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME), options = Opt.Nator.instance.getOptions(moduleElement, {
+                    removeAttributeWhenAcquired: this._options.removeOptionsAttributeWhenAcquired
+                }), instance;
                 instance = Utils.Activator.tryCreateInstanceWithinNamespaces(moduleName, namespaces, [ options ]);
                 if (instance == null) {
                     throw new Error("The module with name [" + moduleName + "] couldn't be created within these namespaces [" + namespaces.join(", ") + "]");
@@ -312,8 +365,11 @@ var Opt;
 (function(Opt) {
     var Nator = function() {
         function Nator() {}
-        Nator.prototype.getOptions = function(elem) {
+        Nator.prototype.getOptions = function(elem, options) {
             var fn = new Function("return " + this.getOptionsAsStringValue(elem) + ";");
+            if (options.removeAttributeWhenAcquired === true) {
+                elem.removeAttribute(Opt.Constants.Common.OPTIONS_ATTRIBUTE_NAME);
+            }
             return fn();
         };
         Nator.prototype.hasOptions = function(elem) {
@@ -395,4 +451,4 @@ var Utils;
     }();
     Utils.Activator = Activator;
 })(Utils || (Utils = {}));
-//# sourceMappingURL=devlopment.js.map
+//# sourceMappingURL=main.js.map

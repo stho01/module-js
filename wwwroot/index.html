@@ -2,32 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ModuleJS - Example</title>
     <link rel="stylesheet" href="content/main.css">
-    <style>
-        .timer-clock {
-            background: #222;
-            border-radius: 3px;
-            padding: 1em;
-            font-size: 24px;
-            font-family: Arial, sans-serif;
-            color: white;
-            max-width: 200px;
-            margin: 1em auto;
-            text-align: center;
-        }
-        
-        .btn-panel {
-            text-align: center;
-        }
-        
-        .btn-panel button {
-            
-        }
-    </style>
 </head>
 <body>
-
 <script id="TimerClockTemplate" type="text/html">
     <div data-module="TimerModule">
         <div class="timer-clock">
@@ -42,34 +20,12 @@
             <span data-js-hook="tc:mins">00</span>:<span data-js-hook="tc:secs">00</span>
         </div>
     </div>
-    <div class="btn-panel">
+    <div class="btn-panel" data-module="TimerControlsModule">
         <button id="btnAddModule">Add module</button>
         <button id="btnRemoveModule">Remove modules</button>
     </div>
 </main>
 
-<script src="../build/modulizer.js"></script>
-<script src="../build/test-app.js"></script>
-<script>
-    Application.Main.run();
-    
-    var mainElement = document.querySelector("main");
-    var domParser = new DOMParser();
-    
-    document.getElementById("btnRemoveModule").addEventListener("click", function() {
-        var createdModules = Array.from(document.querySelectorAll(".created-module"));
-        createdModules.forEach(function (t) { t.parentNode.removeChild(t); }); 
-    });
-
-    document.getElementById("btnAddModule").addEventListener("click", function() {
-        var template        = document.getElementById("TimerClockTemplate").innerText,
-            templateDoc     = domParser.parseFromString(template, "text/html"),
-            moduleElement   = templateDoc.body.firstChild;
-        
-        moduleElement.classList.add("created-module");
-        mainElement.appendChild(moduleElement);
-    });
-
-</script>
+<script src="scripts/main.js"></script>
 </body> 
 </html>
