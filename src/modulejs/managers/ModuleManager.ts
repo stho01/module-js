@@ -1,3 +1,5 @@
+//declare function ModuleJS(options?: PartModulesJS.ModuleManagerOptions): ModulesJS.ModuleManager;
+
 namespace ModulesJS {
     "use strict";
     
@@ -40,12 +42,6 @@ namespace ModulesJS {
      * 
      */
     export class ModuleManager {
-
-        //************************************************************
-        //* Static Fields
-        //************************************************************
-
-        public static readonly instance     : ModuleManager                     = new ModuleManager();
         
         //************************************************************
         //* Fields
@@ -59,8 +55,7 @@ namespace ModulesJS {
         //* Ctor
         //************************************************************
 
-        // this is a singleton
-        private constructor() { 
+        public constructor() { 
             this._mutationObserver = new MutationObserver(this._onDomMutatedEventHandler.bind(this));
         }
         
@@ -69,6 +64,7 @@ namespace ModulesJS {
         //********************************************************************************
 
         /**
+         * Gets the current used module factory.
          * 
          * @return {Abstract.IModuleFactory<IModule>}
          */
@@ -81,10 +77,10 @@ namespace ModulesJS {
         //************************************************************
 
         /**
-         * Configures the manager by overriding the default options. 
-         * 
-         * @param namespaces
+         * Configures the manager by overriding the default options.
+         *
          * @returns {ModulesJS.Managers.ModuleManager}
+         * @param options
          */
         public configure(options: Partial<ModuleManagerOptions>): ModuleManager {
             this._options = Object.assign({}, _defaultOptions, options);
@@ -182,6 +178,7 @@ namespace ModulesJS {
         }
         
         /**
+         * Checks if the element has the module attribute.
          * 
          * @param element
          * @returns {boolean}
