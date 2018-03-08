@@ -1,3 +1,5 @@
+//declare function ModuleJS(options?: PartModulesJS.ModuleManagerOptions): ModulesJS.ModuleManager;
+
 namespace ModulesJS {
     "use strict";
     

@@ -1,10 +1,8 @@
 window.addEventListener("load", function() {
-    var manager = new ModulesJS.ModuleManager();
-    manager.configure({
+    ModuleJs({
         namespaces: [ "Application.Modules" ],
         moduleFactory: new Opt.Factories.ModuleFactory()
     });
-    manager.init();
 });
 
 var Application;
@@ -301,6 +299,13 @@ var ModulesJS;
     }();
     ModulesJS.ModuleManager = ModuleManager;
 })(ModulesJS || (ModulesJS = {}));
+
+function ModuleJs(options) {
+    var manager = new ModulesJS.ModuleManager();
+    manager.configure(options);
+    manager.init();
+    return manager;
+}
 
 var Opt;
 
