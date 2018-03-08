@@ -13,7 +13,7 @@ module Application.Modules {
       rememberTime          : false  
     };
     
-    export class TimerModule implements ModulesJS.Core.Abstract.IModule {
+    export class TimerModule implements ModulesJS.Abstract.IModule {
         //********************************************************************************
         //** STATIC FIELDS
         //********************************************************************************

@@ -43,7 +43,7 @@ namespace Application.Modules {
      * One button for parsing a module template and add it to a given container.
      * One button for removing all appended modules from DOM.
      */
-    export class TimerControlsModule implements ModulesJS.Core.Abstract.IModule {
+    export class TimerControlsModule implements ModulesJS.Abstract.IModule {
 
         //***************************************************
         //** CLASS VARIABLES AND ATTRIBUTES

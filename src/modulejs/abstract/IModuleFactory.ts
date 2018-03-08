@@ -2,7 +2,7 @@
  * Created by Sten Marius on 22.06.2017.
  */
 
-namespace ModulesJS.Core.Abstract {
+namespace ModulesJS.Abstract {
     "use strict";
 
     

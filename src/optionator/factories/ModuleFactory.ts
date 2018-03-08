@@ -19,7 +19,7 @@ namespace Opt.Factories {
      * A Module factory that passes inn an options object to the module constructor if the options
      * exists on the module element. 
      */
-    export class ModuleFactory implements ModulesJS.Core.Abstract.IModuleFactory {
+    export class ModuleFactory implements ModulesJS.Abstract.IModuleFactory {
 
         /**
          * 
@@ -40,14 +40,14 @@ namespace Opt.Factories {
          * @param {string[]} namespaces
          * @return {ModulesJS.Core.Abstract.IModule}
          */
-        create(moduleElement: HTMLElement, namespaces: string[]): ModulesJS.Core.Abstract.IModule {
-            let moduleName  : string                          = moduleElement.getAttribute(ModulesJS.Core.Constants.Common.MODULE_JS_ATTRIBUTE_NAME),
+        create(moduleElement: HTMLElement, namespaces: string[]): ModulesJS.Abstract.IModule {
+            let moduleName  : string                          = moduleElement.getAttribute(ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME),
                 options     : Object                          = Nator.instance.getOptions(moduleElement, {
                     removeAttributeWhenAcquired: this._options.removeOptionsAttributeWhenAcquired
                 }),
-                instance    : ModulesJS.Core.Abstract.IModule;
+                instance    : ModulesJS.Abstract.IModule;
 
-            instance = Utils.Activator.tryCreateInstanceWithinNamespaces<ModulesJS.Core.Abstract.IModule>(moduleName, namespaces, [options]);
+            instance = Utils.Activator.tryCreateInstanceWithinNamespaces<ModulesJS.Abstract.IModule>(moduleName, namespaces, [options]);
             
             // if module failed to instantiate we throws an exception. 
             if (instance == null) {
