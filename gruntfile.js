@@ -10,7 +10,6 @@ module.exports = function (grunt) {
         "src/modulejs.core/**/*.js"
     ];
     
-
     grunt.initConfig({
         uglify: {
             build_dist: {

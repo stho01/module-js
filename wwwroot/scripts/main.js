@@ -1,7 +1,6 @@
 window.addEventListener("load", function() {
     ModuleJs({
-        namespaces: [ "Application.Modules" ],
-        moduleFactory: new Opt.Factories.ModuleFactory()
+        namespaces: [ "Application.Modules" ]
     });
 });
 
