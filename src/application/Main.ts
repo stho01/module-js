@@ -1,11 +1,10 @@
 window.addEventListener("load", () => {
+    let manager = new ModulesJS.ModuleManager();
     
-    ModulesJS.ModuleManager.instance
-            .configure({
-                namespaces: ["Application.Modules"],
-                moduleFactory: new Opt.Factories.ModuleFactory()
-            })
-            .init();
-   
+    manager.configure({
+        namespaces: ["Application.Modules"],
+        moduleFactory: new Opt.Factories.ModuleFactory()
+    });
     
+    manager.init();
 });
