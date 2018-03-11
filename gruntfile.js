@@ -1,10 +1,9 @@
 module.exports = function (grunt) {
-    let testAppFiles = [
+    var testAppFiles = [
         "src/**/*.js",
         "src/application/Main.js"
     ];
-    
-    let distFiles = [
+    var distFiles = [
         "src/utils/**/*.js",
         "src/optionator/**/*.js",
         "src/modulejs.core/**/*.js"
@@ -84,7 +83,7 @@ module.exports = function (grunt) {
                 src: [
                     "src/utils/**/*.ts",
                     "src/optionator/**/*.ts",
-                    "src/modulejs.core/**/*.ts"
+                    "src/modulejs/**/*.ts"
                 ],
                 out: "dist/modulejs.js"
             }
@@ -98,7 +97,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-ts');
 
-    //grunt.registerTask("default ts", ["ts"]);
-    grunt.registerTask("Build Distribution", ["ts", "uglify:build_dist", "uglify:build_test_app"]);
+    grunt.registerTask("Build Distribution", ["ts", "uglify:build_dist", "uglify:minify_dist_build"]);
     grunt.registerTask("Build Test Application", ["uglify:build_test_app"]);
 };

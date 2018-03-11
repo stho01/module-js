@@ -4,8 +4,6 @@
 
 namespace Opt.Factories {
     "use strict";
-
-    
     
     export interface ModuleFactoryOptions {
         removeOptionsAttributeWhenAcquired : boolean;

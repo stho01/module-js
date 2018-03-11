@@ -3,3 +3,4 @@ window.addEventListener("load", () => {
         namespaces: ["Application.Modules"]
     });
 });
+ 
