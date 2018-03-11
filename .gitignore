@@ -123,6 +123,4 @@ typings/
 *.nuspec
 package-lock.json
 /dev/
-/dist/
 /.tscache/
-/build/

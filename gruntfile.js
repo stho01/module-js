@@ -1,102 +1,17 @@
+var tsConfig        = require("./grunt/ts.config");
+var scssConfig      = require("./grunt/scss.config");
+var uglifyConfig    = require("./grunt/uglify.config");
+var watchConfig     = require("./grunt/uglify.config");
+
 module.exports = function (grunt) {
-    var testAppFiles = [
-        "src/**/*.js",
-        "src/application/Main.js"
-    ];
-    var distFiles = [
-        "src/utils/**/*.js",
-        "src/optionator/**/*.js",
-        "src/modulejs.core/**/*.js"
-    ];
-    
     grunt.initConfig({
-        uglify: {
-            build_dist: {
-                options: {
-                    mangle: false,
-                    compress: false,
-                    beautify: true,
-                    sourceMap: true
-                },
-                files: [{
-                    src: distFiles,
-                    dest: 'dist/modulejs.js'
-                }]
-            },
-            minify_dist_build: {
-                options: {},
-                files: [{
-                    src: distFiles,
-                    dest: 'dist/modulejs.min.js'
-                }]
-            },
-            build_test_app: {
-                options: {
-                    mangle: false,
-                    compress: false,
-                    beautify: true,
-                    sourceMap: true
-                },
-                files: [{
-                    src: testAppFiles,
-                    dest: 'wwwroot/scripts/main.js'
-                }]
-            }
-        },
-        watch: {
-            scripts: {
-                files: testAppFiles,
-                tasks: ["uglify:build_test_app"]
-            },
-            sass: {
-                files: ["content/css/**/*.scss"],
-                tasks: ["sass:dev"]
-            }
-        },
-        sass: {
-            dev: {
-                options: {
-                    style: 'expanded'
-                },
-                files: {
-                    "wwwroot/content/main.css": "content/css/main.scss"
-                }
-            }
-        },
-        ts: {
-            options: {
-                declaration: true,
-                sourceMap: false,
-                lib: [
-                    "dom",
-                    "es5",
-                    "es2015.core",
-                    "es2015.collection",
-                    "es2015.promise",
-                    "es2015.iterable",
-                    "es2015.symbol",
-                    "es2015.symbol.wellknown",
-                    "es2015.generator"
-                ]
-            },
-            default : {
-                src: [
-                    "src/utils/**/*.ts",
-                    "src/optionator/**/*.ts",
-                    "src/modulejs/**/*.ts"
-                ],
-                out: "dist/modulejs.js"
-            }
-        }
+        uglify  : uglifyConfig(grunt),
+        sass    : scssConfig(grunt),
+        ts      : tsConfig(grunt),
+        watch   : watchConfig(grunt) 
     });
 
-
     // load tasks.
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-ts');
-
-    grunt.registerTask("Build Distribution", ["ts", "uglify:build_dist", "uglify:minify_dist_build"]);
-    grunt.registerTask("Build Test Application", ["uglify:build_test_app"]);
+    grunt.registerTask("Build Distribution", ["ts","uglify:build_dist","uglify:minify_dist_build"]);
+    grunt.registerTask("Build Test Application",    ["uglify:build_test_app"]);
 };
