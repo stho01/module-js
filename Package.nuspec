@@ -2,21 +2,21 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
         <id>ModuleJS</id>
-        <version>0.0.2</version>
+        <version>0.1.2</version>
         <authors>Sten Marius</authors>
         <owners>Sten Marius</owners>
         <licenseUrl>https://github.com/stho01/module-js/blob/master/license</licenseUrl>
         <projectUrl>https://github.com/stho01/module-js</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>A lightweight modul system</description>
-        <releaseNotes></releaseNotes>
-        <copyright>Copyright 2017</copyright>
+        <releaseNotes>Breaking changes. Removed Core segment from namespace and simplified init call</releaseNotes>
+        <copyright>Copyright 2018</copyright>
         <tags></tags>
         <dependencies></dependencies>
     </metadata>
     <files>
-        <file src="build\modulejs.js" target="scripts\" />
-        <file src="build\modulejs.js.map" target="scripts\" />
-        <file src="build\modulejs.min.js" target="scripts\" />
+        <file src="dist\modulejs.js" target="scripts\" />
+        <file src="dist\modulejs.js.map" target="scripts\" />
+        <file src="dist\modulejs.min.js" target="scripts\" />
     </files>
 </package>
