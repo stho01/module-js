@@ -17,15 +17,16 @@ grunt "Build Test Application"
 
 ## Nuget Package
 
-> https://www.nuget.org/packages/ModuleJS/
+``` bash
+# Nuget
+https://www.nuget.org/packages/ModuleJS/
 
-### Package Manager
+# Package Manager
+> Install-Package ModuleJs
 
-> `Install-Package ModuleJs`
-
-### .NET CLI
-
-> `dotnet add package ModuleJS --version 0.1.5`
+# .NET CLI
+> dotnet add package ModuleJS
+```
 
 ## TypeScript Example
 
