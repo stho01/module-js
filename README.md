@@ -17,7 +17,7 @@ grunt "Build Test Application"
 
 ## Nuget Package
 
-https://www.nuget.org/packages/ModuleJS/
+> https://www.nuget.org/packages/ModuleJS/
 
 ### Package Manager
 
