@@ -27,43 +27,6 @@ https://www.nuget.org/packages/ModuleJS/
 
 > `dotnet add package ModuleJS --version 0.1.5`
 
-## Javascript Example
-
-```html
-<html>
-<head>...</head>
-<body>
-    <div data-module="MyModule">
-        <p>Hello world</p>
-    </div>
-    <script src="scripts/modulejs.js"></script>
-    <script>
-        (function(Modules) {
-            Modules.MyModule = function() {
-                //...
-            };
-            Modules.MyModule.prototype = {
-                constructor: Modules.MyModule,
-                init: function(moduleHtml) {
-                    console.log(moduleHtml);
-                }
-            }
-        })(window.Modules || (window.Modules = {}));
-
-        ModulesJS({ namespaces: ["Modules"]});
-    </script>
-</body>
-</html>
-```
-
-console log output:
-
-```html
-<div data-module="MyModule">
-    <p>Hello world</p>
-</div>
-```
-
 ## TypeScript Example
 
 ```ts
@@ -108,6 +71,43 @@ namespace Modules {
     </script>
 </body>
 </html>
+```
+
+## Javascript Example
+
+```html
+<html>
+<head>...</head>
+<body>
+    <div data-module="MyModule">
+        <p>Hello world</p>
+    </div>
+    <script src="scripts/modulejs.js"></script>
+    <script>
+        (function(Modules) {
+            Modules.MyModule = function() {
+                //...
+            };
+            Modules.MyModule.prototype = {
+                constructor: Modules.MyModule,
+                init: function(moduleHtml) {
+                    console.log(moduleHtml);
+                }
+            }
+        })(window.Modules || (window.Modules = {}));
+
+        ModulesJS({ namespaces: ["Modules"]});
+    </script>
+</body>
+</html>
+```
+
+console log output:
+
+```html
+<div data-module="MyModule">
+    <p>Hello world</p>
+</div>
 ```
 
 ## Run Example
