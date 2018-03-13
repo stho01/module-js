@@ -1,13 +1,33 @@
 # ModuleJS
 
-## Intro
-A lightweight javascript library that provides an easy and effortless instantiation of javascript modules.   
+A lightweight javascript library that provides an easy and effortless instantiation of javascript modules.
 
-## Install
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# Build distribution files
+grunt "Build Distribution"
+
+# Build example
+grunt "Build Test Application"
+```
+
+## Nuget Package
+
+https://www.nuget.org/packages/ModuleJS/
+
+### Package Manager
 
 > `Install-Package ModuleJs`
 
-## Example
+### .NET CLI
+
+> `dotnet add package ModuleJS --version 0.1.5`
+
+## Javascript Example
 
 ```html
 <html>
@@ -16,11 +36,8 @@ A lightweight javascript library that provides an easy and effortless instantiat
     <div data-module="MyModule">
         <p>Hello world</p>
     </div>
-    <script src="scripts/modulejs.js">
+    <script src="scripts/modulejs.js"></script>
     <script>
-        ModulesJS.Core.Managers.ModuleManager.instance
-            .configure({ namespaces: ["Modules"]}).init();
-
         (function(Modules) {
             Modules.MyModule = function() {
                 //...
@@ -32,14 +49,67 @@ A lightweight javascript library that provides an easy and effortless instantiat
                 }
             }
         })(window.Modules || (window.Modules = {}));
+
+        ModulesJS({ namespaces: ["Modules"]});
     </script>
 </body>
 </html>
 ```
 
 console log output:
+
 ```html
 <div data-module="MyModule">
     <p>Hello world</p>
 </div>
 ```
+
+## TypeScript Example
+
+```ts
+// TypeScript Class 
+namespace Modules {
+    export class MyModule implements ModuleJs.Abstract.IModule {
+        /**
+         * Initialize module
+         */
+        init(moduleHtml: HTMLElement): void {
+            console.log(moduleHtml);
+        }
+
+        /**
+         * On load is called after every module on page has initialized.
+         */
+        onLoad(): void {
+            console.log("MyModule loaded");
+        }
+
+        /**
+         * Dispose is called if module is removed from DOM.
+         */
+        dispose(): void {
+            // Detach event handlers etc.
+        }
+    }
+}
+```
+
+```html
+<html>
+<head>...</head>
+<body>
+    <div data-module="MyModule">
+        <p>Hello world</p>
+    </div>
+    <script src="scripts/MyModule.js"></script>
+    <script src="scripts/modulejs.js"></script>
+    <script>
+        ModulesJS({ namespaces: ["Modules"]});
+    </script>
+</body>
+</html>
+```
+
+## Run Example
+
+Use any web server you want and host from /wwwwroot.  
