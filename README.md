@@ -68,7 +68,7 @@ namespace Modules {
     <script src="scripts/MyModule.js"></script>
     <script src="scripts/modulejs.js"></script>
     <script>
-        ModulesJS({ namespaces: ["Modules"]});
+        ModuleJS({ namespaces: ["Modules"]});
     </script>
 </body>
 </html>
@@ -97,7 +97,7 @@ namespace Modules {
             }
         })(window.Modules || (window.Modules = {}));
 
-        ModulesJS({ namespaces: ["Modules"]});
+        ModuleJS({ namespaces: ["Modules"]});
     </script>
 </body>
 </html>
