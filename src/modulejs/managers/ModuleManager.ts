@@ -191,6 +191,20 @@ namespace ModulesJS {
             return element.hasAttribute(Constants.Common.MODULE_JS_ATTRIBUTE_NAME);
         }
 
+        /**
+         * Gets the module instance tied to the html element.
+         * @param element
+         */
+        public getModuleInstance(element: HTMLElement): IModule|null {
+            for (let parent = element; parent != null && parent !== document.body; parent = parent.parentElement) {
+                if (this._instanceMap.has(parent)) {
+                    return this._instanceMap.get(parent).module;
+                }    
+            }
+            
+            return null;
+        }
+
         //************************************************************
         //* Private member functions
         //************************************************************
