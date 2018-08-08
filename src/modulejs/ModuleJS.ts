@@ -4,3 +4,5 @@ function ModuleJs(options?: Partial<ModulesJS.ModuleManagerOptions>): ModulesJS.
     manager.init();
     return manager;
 }
+
+

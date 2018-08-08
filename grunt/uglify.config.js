@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    var testAppFiles = [ "src/**/*.js", "src/application/Main.js" ];
+    var testAppFiles = [ "src/utils/**/*.js", "src/optionator/**/*.js", "src/modulejs/**/*.js", "src/**/*.js", "src/application/Main.js" ];
     var distFiles = [ "src/utils/**/*.js", "src/optionator/**/*.js", "src/modulejs/**/*.js" ];
 
     return {
