@@ -264,6 +264,14 @@ var ModulesJS;
             }
             return element.hasAttribute(ModulesJS.Constants.Common.MODULE_JS_ATTRIBUTE_NAME);
         };
+        ModuleManager.prototype.getModuleInstance = function(element) {
+            for (var parent_1 = element; parent_1 != null && parent_1 !== document.body; parent_1 = parent_1.parentElement) {
+                if (this._instanceMap.has(parent_1)) {
+                    return this._instanceMap.get(parent_1).module;
+                }
+            }
+            return null;
+        };
         ModuleManager.prototype._getAllModuleElements = function(root, includeSelf) {
             if (root === void 0) {
                 root = document.body;
